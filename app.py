@@ -107,6 +107,29 @@ if project_id:
 def compute_qr_base_url(settings):
     return "https://qr-project-generator-mtuimjvrgnb5vs9ojfgazq.streamlit.app"
 
+
+def save_uploaded_video(uploaded_file, qr_base_url):
+    if uploaded_file is None:
+        return ""
+
+    original_name = clean_text(uploaded_file.name)
+    ext = os.path.splitext(original_name)[1].lower()
+
+    if ext not in ALLOWED_VIDEO_EXTS:
+        return ""
+
+    os.makedirs(VIDEO_UPLOAD_DIR, exist_ok=True)
+
+    safe_base = safe_filename(os.path.splitext(original_name)[0])
+    file_name = f"{safe_base}_{uuid.uuid4().hex[:10]}{ext}"
+
+    file_path = os.path.join(VIDEO_UPLOAD_DIR, file_name)
+
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    return f"{qr_base_url}/uploaded_videos/{file_name}"
+
 def create_project_and_qr(
     name,
     roll,
