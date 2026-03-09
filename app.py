@@ -93,9 +93,14 @@ if project_id:
         st.write("Roll Number:", project[2])
         st.write("Description:", project[4])
 
+        # VIDEO DISPLAY FIX
         video_link = project[6]
+
         if video_link:
-            st.video(video_link)
+            if os.path.exists(video_link):
+                st.video(video_link)      # uploaded video
+            else:
+                st.video(video_link)      # youtube or web link
 
     else:
         st.error("Project not found")
@@ -128,7 +133,8 @@ def save_uploaded_video(uploaded_file, qr_base_url):
     with open(file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    return f"{qr_base_url}/uploaded_videos/{file_name}"
+    return file_path   # return LOCAL FILE PATH
+
 
 def create_project_and_qr(
     name,
