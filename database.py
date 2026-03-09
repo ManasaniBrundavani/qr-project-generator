@@ -222,3 +222,13 @@ def set_project_expiry(project_id, expiry_enabled=True, expiry_days=150):
     c.execute("UPDATE projects SET expires_at = ? WHERE id = ?", (expires_text, project_id))
     conn.commit()
     conn.close()
+
+def get_project_by_id(project_id):
+    conn = sqlite3.connect("expo.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
+    project = cursor.fetchone()
+
+    conn.close()
+    return project
