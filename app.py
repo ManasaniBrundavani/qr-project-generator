@@ -13,6 +13,7 @@ from bulk_import import BULK_REQUIRED_COLUMNS_TEXT, parse_xlsx_without_dependenc
 from database import (
     find_existing_project_id,
     get_all_projects,
+    get_project_by_id,   # FIXED IMPORT
     init_db,
     insert_project,
     set_project_expiry,
@@ -23,6 +24,7 @@ from utils.qr_generator import generate_qr
 
 
 REQUIRED_IMPORT_FIELDS = ["name", "roll", "project_title", "project_description"]
+
 FIELD_LABELS = {
     "name": "Name",
     "roll": "Roll",
@@ -30,8 +32,12 @@ FIELD_LABELS = {
     "project_description": "Description",
     "video_link": "Video Link",
 }
+
 VIDEO_UPLOAD_DIR = "uploaded_videos"
 ALLOWED_VIDEO_EXTS = {".mp4", ".webm", ".ogg", ".m4v", ".mov"}
+
+query_params = st.query_params
+project_id = query_params.get("id")
 
 
 def detect_lan_ip():
@@ -75,30 +81,31 @@ def set_qr_path(project_id, qr_path):
     conn.close()
 
 
-def save_uploaded_video(uploaded_file, qr_base_url):
-    if uploaded_file is None:
-        return ""
+# ---------- QR REDIRECT FIX ----------
+if project_id:
+    project_id = int(project_id)
 
-    original_name = clean_text(uploaded_file.name)
-    ext = os.path.splitext(original_name)[1].lower()
-    if ext not in ALLOWED_VIDEO_EXTS:
-        return ""
+    project = get_project_by_id(project_id)
 
-    os.makedirs(VIDEO_UPLOAD_DIR, exist_ok=True)
-    safe_base = safe_filename(os.path.splitext(original_name)[0])
-    file_name = f"{safe_base}_{uuid.uuid4().hex[:10]}{ext}"
-    file_path = os.path.join(VIDEO_UPLOAD_DIR, file_name)
+    if project:
+        st.title(project[3])  # Project Title
+        st.write("Student Name:", project[1])
+        st.write("Roll Number:", project[2])
+        st.write("Description:", project[4])
 
-    with open(file_path, "wb") as file_obj:
-        file_obj.write(uploaded_file.getbuffer())
+        video_link = project[6]
+        if video_link:
+            st.video(video_link)
 
-    return f"{qr_base_url}/uploaded_videos/{file_name}"
+    else:
+        st.error("Project not found")
+
+    st.stop()
+# ------------------------------------
 
 
 def compute_qr_base_url(settings):
-    # Always use deployed Streamlit URL
     return "https://qr-project-generator-mtuimjvrgnb5vs9ojfgazq.streamlit.app"
-
 
 def create_project_and_qr(
     name,
