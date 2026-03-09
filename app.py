@@ -33,7 +33,7 @@ FIELD_LABELS = {
     "video_link": "Video Link",
 }
 
-VIDEO_UPLOAD_DIR = "uploaded_videos"
+VIDEO_UPLOAD_DIR = "static"
 ALLOWED_VIDEO_EXTS = {".mp4", ".webm", ".ogg", ".m4v", ".mov"}
 
 query_params = st.query_params
@@ -96,13 +96,21 @@ if project_id:
         # VIDEO DISPLAY FIX
         video_link = project[6]
 
+        video_link = project[6]
+
         if video_link:
-            # if os.path.exists(video_link):     # uploaded video
-            #     with open(video_link, "rb") as video_file:
-            #         video_bytes = video_file.read()
-            #     st.video(video_bytes)
-            # else:
-                st.video(video_link)      # youtube or web link
+            # If it's a local file path in the 'static' folder
+            if video_link.startswith("static/"):
+                # We serve it as a direct web path
+                st.video(video_link)
+            # If it's an absolute path from your local PC (needs cleanup)
+            elif "uploaded_videos" in video_link:
+                # This fixes old database entries to point to the new 'static' folder
+                fixed_path = video_link.replace("uploaded_videos", "static")
+                st.video(fixed_path)
+            else:
+                # It's a YouTube or web link
+                st.video(video_link)
 
     else:
         st.error("Project not found")
