@@ -96,16 +96,8 @@ def save_uploaded_video(uploaded_file, qr_base_url):
 
 
 def compute_qr_base_url(settings):
-    flask_port = int(settings.get("flask_port", 5000))
-    public_url = clean_text(settings.get("public_base_url", "")).rstrip("/")
-    manual_url = clean_text(settings.get("manual_qr_base_url", "")).rstrip("/")
-    if public_url:
-        return public_url
-    if settings.get("auto_detect_ip", True):
-        return f"http://{detect_lan_ip()}:{flask_port}"
-    if manual_url:
-        return manual_url
-    return f"http://{detect_lan_ip()}:{flask_port}"
+    # Always use deployed Streamlit URL
+    return "https://qr-project-generator-mtuimjvrgnb5vs9ojfgazq.streamlit.app"
 
 
 def create_project_and_qr(
