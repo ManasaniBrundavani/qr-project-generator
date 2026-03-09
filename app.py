@@ -150,8 +150,29 @@ def save_uploaded_video(uploaded_file, qr_base_url):
     if uploaded_file is None:
         return ""
 
-    video_bytes = uploaded_file.read()
-    return video_bytes
+    original_name = clean_text(uploaded_file.name)
+    ext = os.path.splitext(original_name)[1].lower()
+
+    if ext not in ALLOWED_VIDEO_EXTS:
+        return ""
+
+    # 1. Ensure the 'static' directory exists
+    os.makedirs("static", exist_ok=True)
+
+    # 2. Create a unique filename
+    safe_base = safe_filename(os.path.splitext(original_name)[0])
+    file_name = f"{safe_base}_{uuid.uuid4().hex[:10]}{ext}"
+    
+    # 3. Path where the file is stored on the server
+    save_path = os.path.join("static", file_name)
+
+    # 4. Write the file to disk
+    with open(save_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    # 5. IMPORTANT: Return the path starting with 'static/' 
+    # so st.video() knows how to find it later
+    return f"static/{file_name}"
 
 def create_project_and_qr(
     name,
