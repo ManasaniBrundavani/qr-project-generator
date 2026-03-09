@@ -98,7 +98,9 @@ if project_id:
 
         if video_link:
             if os.path.exists(video_link):     # uploaded video
-                st.video(video_link)
+                with open(video_link, "rb") as video_file:
+                    video_bytes = video_file.read()
+                st.video(video_bytes)
             else:
                 st.video(video_link)      # youtube or web link
 
@@ -133,7 +135,7 @@ def save_uploaded_video(uploaded_file, qr_base_url):
     with open(file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    return file_path   # return LOCAL FILE PATH
+    return file_path   # IMPORTANT
 
 
 def create_project_and_qr(
