@@ -1,0 +1,14 @@
+# streamlit
+# qrcode
+# pillow
+# Flask
+# pandas
+# openpyxl
+
+
+streamlit
+qrcode
+pillow
+requests
+pandas
+numpy

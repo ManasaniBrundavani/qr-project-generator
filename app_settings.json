@@ -1,0 +1,14 @@
+{
+  "auto_detect_ip": true,
+  "manual_qr_base_url": "",
+  "public_base_url": "",
+  "flask_port": 5000,
+  "auto_update_qr_urls": true,
+  "last_qr_base_url": "http://192.168.14.82:5000",
+  "expiry_enabled": true,
+  "expiry_days": 150,
+  "video_fit": "contain",
+  "font_scale": 1.0,
+  "spacing_scale": 1.0,
+  "grid_columns": 6
+}
