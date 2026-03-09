@@ -98,7 +98,9 @@ if project_id:
 
         if video_link:
             if os.path.exists(video_link):
-                st.video(video_link)      # uploaded video
+                with open(video_link, "rb") as video_file:
+                    video_bytes = video_file.read()     # uploaded video
+                st.video(video_bytes)
             else:
                 st.video(video_link)      # youtube or web link
 
