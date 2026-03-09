@@ -97,11 +97,11 @@ if project_id:
         video_link = project[6]
 
         if video_link:
-            if os.path.exists(video_link):     # uploaded video
-                with open(video_link, "rb") as video_file:
-                    video_bytes = video_file.read()
-                st.video(video_bytes)
-            else:
+            # if os.path.exists(video_link):     # uploaded video
+            #     with open(video_link, "rb") as video_file:
+            #         video_bytes = video_file.read()
+            #     st.video(video_bytes)
+            # else:
                 st.video(video_link)      # youtube or web link
 
     else:
@@ -115,28 +115,35 @@ def compute_qr_base_url(settings):
     return "https://qr-project-generator-mtuimjvrgnb5vs9ojfgazq.streamlit.app"
 
 
+# def save_uploaded_video(uploaded_file, qr_base_url):
+#     if uploaded_file is None:
+#         return ""
+
+#     original_name = clean_text(uploaded_file.name)
+#     ext = os.path.splitext(original_name)[1].lower()
+
+#     if ext not in ALLOWED_VIDEO_EXTS:
+#         return ""
+
+#     os.makedirs(VIDEO_UPLOAD_DIR, exist_ok=True)
+
+#     safe_base = safe_filename(os.path.splitext(original_name)[0])
+#     file_name = f"{safe_base}_{uuid.uuid4().hex[:10]}{ext}"
+
+#     file_path = os.path.join(VIDEO_UPLOAD_DIR, file_name)
+
+#     with open(file_path, "wb") as f:
+#         f.write(uploaded_file.getbuffer())
+
+#     return file_path   # IMPORTANT
+
+
 def save_uploaded_video(uploaded_file, qr_base_url):
     if uploaded_file is None:
         return ""
 
-    original_name = clean_text(uploaded_file.name)
-    ext = os.path.splitext(original_name)[1].lower()
-
-    if ext not in ALLOWED_VIDEO_EXTS:
-        return ""
-
-    os.makedirs(VIDEO_UPLOAD_DIR, exist_ok=True)
-
-    safe_base = safe_filename(os.path.splitext(original_name)[0])
-    file_name = f"{safe_base}_{uuid.uuid4().hex[:10]}{ext}"
-
-    file_path = os.path.join(VIDEO_UPLOAD_DIR, file_name)
-
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-
-    return file_path   # IMPORTANT
-
+    video_bytes = uploaded_file.read()
+    return video_bytes
 
 def create_project_and_qr(
     name,
